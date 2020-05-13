@@ -2038,8 +2038,11 @@ class Generator (ast.NodeVisitor):
                     reprAssigns.append (statement)
                     compareAssigns.append (statement)
                     self.emitSemiColon (index, False)
-                    self.emit('\nlet {0} = cls.{0} = ', self.filterId(statement.target.id))
-                    self.visit(statement.value)
+                    if statement.value is None:
+                        self.emit('\nlet {0} = cls.{0}', self.filterId(statement.target.id))
+                    else:
+                        self.emit('\nlet {0} = cls.{0} = ', self.filterId(statement.target.id))
+                        self.visit(statement.value)
                     self.adaptLineNrString (statement)
                     index += 1
                 elif type (statement.target) == ast.Name:
@@ -2047,8 +2050,11 @@ class Generator (ast.NodeVisitor):
                         # Simple class var assignment
                         inlineAssigns.append (statement)
                         self.emitSemiColon (index, False)
-                        self.emit('\nlet {0} = cls.{0} = ', self.filterId(statement.target.id))
-                        self.visit(statement.value)
+                        if statement.value is None:
+                            self.emit('\nlet {0} = cls.{0}', self.filterId(statement.target.id))
+                        else:
+                            self.emit('\nlet {0} = cls.{0} = ', self.filterId(statement.target.id))
+                            self.visit(statement.value)
                         self.adaptLineNrString (statement)
                         index += 1
                     except:
