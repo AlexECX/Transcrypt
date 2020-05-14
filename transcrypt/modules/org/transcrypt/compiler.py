@@ -2781,7 +2781,7 @@ return list (selfFields).''' + comparatorName + '''(list (otherFields));
                         self.emit (');}})')
 
                 if nodeName == '__iter__':
-                    self.emit (';\ncls[Symbol.iterator] = () => cls.__iter__')
+                    self.emit (';\ncls[Symbol.iterator] = () => cls.__iter__()')
 
                 if nodeName == '__next__':
                     self.emit (';\ncls.next = __jsUsePyNext__')  # ??? Shouldn't this be a property, to allow bound
