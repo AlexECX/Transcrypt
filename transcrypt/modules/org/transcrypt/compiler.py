@@ -2063,13 +2063,15 @@ class Generator (ast.NodeVisitor):
                     # LHS is attribute or array element, we can't use it for representation or comparison
                     delayedAssigns.append (statement)
 
-            elif type (statement) == ast.Expression:
-                # It's a class scoped expression
-                self.visit(statement)
-
-            elif self.getPragmaFromExpr (statement):
-                # It's a pragma
-                self.visit (statement)
+            elif type (statement) == ast.Expr:
+                if self.getPragmaFromExpr (statement):
+                    # It's a pragma
+                    self.visit (statement)
+                else:
+                    # It's a class scoped expression
+                    self.emitSemiColon (index, False)
+                    self.emit ('\n')
+                    self.visit (statement)
 
         self.emitSemiColon(index, False)
         self.emit('\nreturn cls;')
