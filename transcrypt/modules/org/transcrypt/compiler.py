@@ -2013,7 +2013,7 @@ class Generator (ast.NodeVisitor):
                         # Simple class var assignment, can be generated in-line as initialisation field of a JavaScript object literal
                         inlineAssigns.append (statement)
                         self.emitSemiColon (index, False)
-                        self.emit ('\nlet {0} = cls.{0} = ', self.filterId (statement.targets [0] .id))
+                        self.emit ('\nvar {0} = cls.{0} = ', self.filterId (statement.targets [0] .id))
                         self.visit (statement.value)
                         self.adaptLineNrString (statement)
                         index += 1
@@ -2039,9 +2039,9 @@ class Generator (ast.NodeVisitor):
                     compareAssigns.append (statement)
                     self.emitSemiColon (index, False)
                     if statement.value is None:
-                        self.emit('\nlet {0} = cls.{0}', self.filterId(statement.target.id))
+                        self.emit('\nvar {0} = cls.{0}', self.filterId(statement.target.id))
                     else:
-                        self.emit('\nlet {0} = cls.{0} = ', self.filterId(statement.target.id))
+                        self.emit('\nvar {0} = cls.{0} = ', self.filterId(statement.target.id))
                         self.visit(statement.value)
                     self.adaptLineNrString (statement)
                     index += 1
@@ -2051,9 +2051,9 @@ class Generator (ast.NodeVisitor):
                         inlineAssigns.append (statement)
                         self.emitSemiColon (index, False)
                         if statement.value is None:
-                            self.emit('\nlet {0} = cls.{0}', self.filterId(statement.target.id))
+                            self.emit('\nvar {0} = cls.{0}', self.filterId(statement.target.id))
                         else:
-                            self.emit('\nlet {0} = cls.{0} = ', self.filterId(statement.target.id))
+                            self.emit('\nvar {0} = cls.{0} = ', self.filterId(statement.target.id))
                             self.visit(statement.value)
                         self.adaptLineNrString (statement)
                         index += 1
@@ -2062,6 +2062,10 @@ class Generator (ast.NodeVisitor):
                 else:
                     # LHS is attribute or array element, we can't use it for representation or comparison
                     delayedAssigns.append (statement)
+
+            elif type (statement) == ast.Expression:
+                # It's a class scoped expression
+                self.visit(statement)
 
             elif self.getPragmaFromExpr (statement):
                 # It's a pragma
