@@ -1918,7 +1918,7 @@ class Generator (ast.NodeVisitor):
             self.emit ('export var {} = '.format (self.filterId (node.name)))
             self.allOwnNames.add (node.name)
         elif type (self.getScope () .node) == ast.ClassDef:
-            self.emit ('\n{}:'.format (self.filterId (node.name)))
+            self.emit ('\nvar {0} = cls.{0} = '.format (self.filterId (node.name)))
         else:
             self.emit ('var {} ='.format (self.filterId (node.name)))
 
